@@ -1,0 +1,14 @@
+ublic_subnet_ids = [
+  "subnet-097b814bf2cd0e3fb",
+  "subnet-058385dc8fc1edb3b",
+]
+security_group_id = "sg-0926a200588197b2e"
+vpc_id = "vpc-0bc2da16ec2d4c98a"
+andrewkamuto@MacBookAir networking % terraform output
+public_subnet_ids = [
+  "subnet-097b814bf2cd0e3fb",
+  "subnet-058385dc8fc1edb3b",
+]
+security_group_id = "sg-0926a200588197b2e"
+vpc_id = "vpc-0bc2da16ec2d4c98a"
+ 

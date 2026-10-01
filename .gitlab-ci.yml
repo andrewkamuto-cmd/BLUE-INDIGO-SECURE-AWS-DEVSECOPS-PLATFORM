@@ -1,0 +1,27 @@
+stages:
+  - validate
+  - security
+  - plan
+  - build
+  - deploy
+  - verify
+
+variables:
+  AWS_DEFAULT_REGION: "us-east-1"
+  TF_IN_AUTOMATION: "true"
+
+  terraform_validate:
+  stage: validate
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint: [""]
+  script:
+    - terraform -chdir=terraform/networking fmt -check
+    - terraform -chdir=terraform/networking init -backend=false
+    - terraform -chdir=terraform/networking validate
+
+
+    id_tokens:
+  GITLAB_OIDC_TOKEN:
+    aud: sts.amazonaws.com
+    
