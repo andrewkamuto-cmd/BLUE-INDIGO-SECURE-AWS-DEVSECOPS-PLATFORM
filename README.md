@@ -1,5 +1,5 @@
 # BLUE INDIGO SECURE AWS DEVSECOPS PLATFORM
- ** PROJECT SILL IN DEVELOPMENT.
+ ** PROJECT STILL IN DEVELOPMENT.
 This project was built to demonstrate how I would design an architecture leveraging Terraform for Infrastructure as Code and Terragrunt to orchestrate Terraform's configuration. I validated secure container orchestration with EKS, automated CI/CD leveraging GitLab, enforced strict security governance and utilized Prometheus and Grafana for compliance across multiple AWS environments. 
  
 
