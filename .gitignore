@@ -1,0 +1,45 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+crash.log
+crash.*.log
+
+# Terragrunt
+.terragrunt-cache/
+
+# Terraform plans
+*.tfplan
+tfplan
+
+# Environment variables
+.env
+.env.*
+
+# AWS credentials
+.aws/
+credentials
+
+# Secrets
+*.pem
+*.key
+*.p12
+secrets.yaml
+secret.yaml
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Temporary files
+*.tmp
+*.bak
