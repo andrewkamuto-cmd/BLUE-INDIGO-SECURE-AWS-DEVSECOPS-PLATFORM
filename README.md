@@ -1,6 +1,6 @@
 # BLUE INDIGO SECURE AWS DEVSECOPS PLATFORM
- ** PROJECT STILL IN DEVELOPMENT.
-This project was built to demonstrate how I would design an architecture leveraging Terraform for Infrastructure as Code and Terragrunt to orchestrate Terraform's configuration. I validated secure container orchestration with EKS, automated CI/CD leveraging GitLab, enforced strict security governance and utilized Prometheus and Grafana for compliance across multiple AWS environments. 
+ 
+This project was built to demonstrate how I would design an architecture leveraging Terraform for Infrastructure as Code and Terragrunt to orchestrate Terraform's configuration. I validated secure container orchestration with EKS, automated CI/CD leveraging GitLab, enforced strict security governance and utilized Prometheus and Grafana for compliance across multiple AWS environments. Every resource and tool was provisoned and configured in terraform.
  
 
 ## Business Problem 
@@ -159,4 +159,88 @@ Maximum Nodes: 2
 
 Instance Type: t3.small
 
-The nodes uses the existing VPC networking created earlier at the founndation of this project. Then the infrastructure for the Kubernetes environment was provisioned.
+The nodes uses the existing VPC networking created earlier at the foundation of this project. Then the infrastructure for the Kubernetes environment was provisioned.
+
+
+## Kubernetes Deployment
+
+After the EKS infrastructure was available, I configured kubectl to communicate with the cluster and deployed the Blue Indigo application using Kubernetes. Then configured a namespace, ConfigMap, Deployment, LoadBalancer Service, and Horizontal Pod Autoscaler. The LoadBalancer exposed the application externally while Kubernetes maintained the desired application state.
+
+
+## Kubernetes Horizontal Pod Autoscaling
+
+I configured a Horizontal Pod Autoscaler to scale the application based on CPU utilization. The configuration uses:
+
+- Minimum Pods: 1
+- Maximum Pods: 3
+- Target CPU Utilization: 50%
+
+Then I installed the Metrics Server so Kubernetes could collect resource metrics required by the HPA to respond to workload changes without manually increasing the number of pods.
+
+
+## Prometheus and Grafana Monitoring
+
+I deployed the Prometheus and Grafana monitoring stack. Prometheus collected Kubernetes infrastructure and workload metrics while Grafana provided dashboards for visualizing cluster health, node utilization, pods, CPU, and memory. This provided a second observability layer in addition to CloudWatch.
+
+
+## AWS Security and Governance
+
+I then added a security and governance layer. This was to demonstrate that infrastructure should not only be deployable and scalable, but also it should be auditable and continuously evaluated against security requirements.
+
+
+## AWS CloudTrail
+
+I provisioned AWS CloudTrail to create an audit trail of AWS API activity. CloudTrail logs were then delivered to a dedicated S3 bucket with public access blocked and server-side encryption enabled.
+
+I also enabled the following:
+
+- Multi-Region trail
+- Global service events
+- Log file validation
+
+
+## AWS Config
+
+I enabled AWS Config to record AWS resource configurations and evaluate them against security rules. I provisioned a dedicated S3 bucket for Config records and an IAM role that allowed AWS Config to perform the required configuration-recording operations.
+
+I then added managed Config rules to evaluate important controls including:
+
+- S3 public read access
+- EBS volume encryption
+- Unrestricted SSH access
+
+CloudTrail was useful because it told me what AWS API activity occurred, while AWS Config helped me understand resource configuration and whether resources meet the selected configuration rules.
+
+
+## Amazon GuardDuty
+
+GuardDuty was included in the security architecture for managed threat detection.
+
+The Terraform configuration I created was:
+
+```hcl
+resource "aws_guardduty_detector" "main" {
+  enable = true
+
+  tags = local.common_tags
+}
+
+But during deployment, AWS returned a SubscriptionRequiredException because GuardDuty was not available for activation through the current account configuration. I removed the GuardDuty resource from the active deployment while keeping it documented as part of the production architecture. In a production environment, I would use GuardDuty to continuously analyze and identify suspicious activity and potential threats affecting AWS accounts.
+
+
+## Security Hub
+
+Security Hub was included in the target architecture as the centralized security posture layer. In a production environment, I would use Security Hub to aggregate security findings and evaluate AWS resources against enabled security controls and standards.
+
+
+## Compliance 
+
+The architecture demonstrates technical alignment with common security and compliace requirements found across:
+
+- PCI DSS
+- SOC 2
+- SOX
+- NIST SP 800-171
+- ISO/IEC 27001
+
+

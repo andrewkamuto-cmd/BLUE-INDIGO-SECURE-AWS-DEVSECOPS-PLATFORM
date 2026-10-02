@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: blue-indigo
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blue-indigo-config
+  namespace: blue-indigo
+data:
+  PLATFORM: "EKS"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue-indigo-api
+  namespace: blue-indigo
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: blue-indigo-api
+
+  template:
+    metadata:
+      labels:
+        app: blue-indigo-api
+
+    spec:
+      containers:
+        - name: blue-indigo-api
+          image: 581171874509.dkr.ecr.us-east-1.amazonaws.com/blue-indigo-api:v2
+
+          ports:
+            - containerPort: 3000
+
+          envFrom:
+            - configMapRef:
+                name: blue-indigo-config
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blue-indigo-api
+  namespace: blue-indigo
+spec:
+  selector:
+    app: blue-indigo-api
+
+  ports:
+    - port: 80
+      targetPort: 3000
+
+  type: LoadBalancer
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: blue-indigo-api
+  namespace: blue-indigo
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: blue-indigo-api
+
+  minReplicas: 1
+  maxReplicas: 3
+
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+
+        target:
+          type: Utilization
+          averageUtilization: 50
