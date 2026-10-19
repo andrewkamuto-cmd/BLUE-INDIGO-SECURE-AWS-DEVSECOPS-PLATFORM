@@ -1,5 +1,17 @@
 # BLUE INDIGO SECURE AWS DEVSECOPS PLATFORM
- 
+
+[!IMPORTANT]
+Architecture Decision — Cost Optimization
+
+This project is a personal DevSecOps lab that demonstrates deploying a containerized application using both Amazon ECS Fargate and Amazon EKS for showcasing purposes.
+
+In a production environment, I would not deploy the same application to both platforms because doing so increases infrastructure costs and complexity to the pipeline workflow.
+
+This is what I would do:
+
+-Select one platform: Use ECS Fargate for a straightforward containerized application, or EKS when Kubernetes capabilities are required.
+-For this Node.js API, I would initially choose ECS Fargate because it avoids the additional EKS cluster management and worker-node costs while supporting application autoscaling. 
+
 This project was built to demonstrate how I would design an architecture leveraging Terraform for Infrastructure as Code and Terragrunt to orchestrate Terraform's configuration. I validated secure container orchestration with EKS, automated CI/CD leveraging GitLab, enforced strict security governance and utilized Prometheus and Grafana for compliance across multiple AWS environments. Every resource and tool was provisoned and configured in terraform.
  
 
